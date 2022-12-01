@@ -1,5 +1,4 @@
-using System;
-using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +17,9 @@ namespace MyFunctions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            using var activitySource = new ActivitySource("MyFunctions");
-            using var activity = activitySource.StartActivity("Function1");
+            var meter = new Meter("MyMeter");
+            var counter = meter.CreateUpDownCounter<int>("MyCounter");
+            counter.Add(1);
 
             log.LogInformation("C# HTTP trigger function processed a request.");
 
